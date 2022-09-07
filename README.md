@@ -4,6 +4,12 @@ JSON Pointer ([RFC6901](https://www.rfc-editor.org/rfc/rfc6901)) implementation 
 
 Mutate a copy of data without changing the original source.
 
+## Install
+
+```bash
+npm install git@github.com:trkbt10/immutable-json-pointer.git
+```
+
 ## Usage
 
 ### Get
