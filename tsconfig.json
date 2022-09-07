@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es2021",
+    "outDir": "types",
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "newLine": "LF",
+    "sourceMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "lib": ["ES2020"],
+    "composite": true,
+    "stripInternal": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "types": ["vitest/globals"]
+  },
+  "include": ["__tests__/**/*.ts", "src/**/*.ts", "src/**/*.d.ts"]
+}
