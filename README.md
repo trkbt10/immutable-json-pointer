@@ -12,7 +12,7 @@ npm install git@github.com:trkbt10/immutable-json-pointer.git
 
 ## Usage
 
-### Get
+### get
 
 ```typescript
 import { get } from "immutable-json-pointer";
@@ -44,7 +44,7 @@ expect(get(json, "/ ")).toBe(7);
 expect(get(json, "/m~0n")).toBe(8);
 ```
 
-### Set
+### set
 
 ```typescript
 import { set } from "immutable-json-pointer";
@@ -61,4 +61,40 @@ expect(newJson === json).toBeFalsy();
 expect(newJson.hoge === json.hoge).toBeTruthy();
 expect(newJson.foo === json.foo).toBeFalsy();
 expect(newJson.foo[2]).toBe("boss");
+```
+
+### has
+
+```typescript
+import { has } from "immutable-json-pointer";
+const json = {
+  value: 1,
+};
+has(json, "/value"); // true
+has(json, "/item"); // false
+```
+
+### remove
+
+```typescript
+import { remove } from "immutable-json-pointer";
+const json = {
+  unused: 0,
+  value: 1,
+};
+const newJson = remove(json, "/unused");
+console.log(newJSON); // { value: 1 }
+console.log(json); // { unused: 0, value: 1 }
+```
+
+### dict
+
+```typescript
+import { dict } from "immutable-json-pointer";
+const json = {
+  item: 0,
+  value: 1,
+};
+const dic = dict(json);
+console.log(dic); // { '/item': 0, '/value': 1 }
 ```
