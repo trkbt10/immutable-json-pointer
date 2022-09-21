@@ -112,7 +112,7 @@ export function dict<T extends {}>(json: T): Record<string, unknown> {
   return result;
 }
 export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
-  const next: T = { ...doc };
+  const next: T = clone(doc);
   const replacer: JSONPointerReplacer = (value, key, parent, paths) => {
     if (value === nextValue) {
       return;
@@ -137,15 +137,21 @@ export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
         return;
       }
       const current = prev[path];
-      if (Array.isArray(current)) {
-        prev[path] = [...current];
-      } else {
-        prev[path] = { ...current };
-      }
+      prev[path] = clone(current);
       prev = prev[path];
     } while (++i <= pathSize);
   };
 
   resolve(doc, pointer, replacer);
   return next;
+}
+
+function clone<T extends any>(item: T) {
+  if (Array.isArray(item)) {
+    return [...item] as T;
+  }
+  if (isObject(item)) {
+    return { ...item } as T;
+  }
+  return item;
 }
