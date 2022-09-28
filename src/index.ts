@@ -146,6 +146,21 @@ export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
   resolve(doc, pointer, replacer);
   return next;
 }
+export function read<T extends {}>(json: T, pointer: string) {
+  if (has(json, pointer)) {
+    return get(json, pointer);
+  }
+  return;
+}
+
+export function transform<
+  T extends {},
+  Fn extends (params: unknown) => unknown
+>(doc: T, pointer: string, fn: Fn): T {
+  const result: Parameters<Fn>[0] = read(doc, pointer);
+  const next = fn(result) as ReturnType<Fn>;
+  return set<T>(doc, pointer, next);
+}
 
 function clone<T extends any>(item: T) {
   if (Array.isArray(item)) {
