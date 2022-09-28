@@ -7,7 +7,11 @@ Mutate a copy of data without changing the original source.
 ## Install
 
 ```bash
-npm install git@github.com:trkbt10/immutable-json-pointer.git
+// NPM
+$ npm install git@github.com:trkbt10/immutable-json-pointer.git
+
+// yarn v2
+$ yarn add 'immutable-json-pointer@https://github.com/trkbt10/immutable-json-pointer.git#head=main'
 ```
 
 ## Usage
@@ -74,6 +78,17 @@ has(json, "/value"); // true
 has(json, "/item"); // false
 ```
 
+### read
+
+```typescript
+import { read } from "immutable-json-pointer";
+const json = {
+  value: 1,
+};
+read(json, "/value"); // 1
+read(json, "/item"); // undefined
+```
+
 ### remove
 
 ```typescript
@@ -97,4 +112,29 @@ const json = {
 };
 const dic = dict(json);
 console.log(dic); // { '/item': 0, '/value': 1 }
+```
+
+### compile
+
+```typescript
+import { compile } from "immutable-json-pointer";
+console.log(compile(["a", "b", "c"])); // "/a/b/c"
+```
+
+### transform
+
+```typescript
+import { transform } from "immutable-json-pointer";
+const json = {
+  value: 0,
+};
+const nextValue = 1;
+const json2 = transform(json, "/value", (prev, path) => {
+  if (prev != nextValue) {
+    return nextValue;
+  }
+  return prev;
+});
+console.log(json); // { "value": 0 }
+console.log(json2); // { "value": 1 }
 ```
