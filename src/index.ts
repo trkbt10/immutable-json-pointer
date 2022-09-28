@@ -30,16 +30,17 @@ export function has<T extends {}>(obj: T, pointer: string): boolean {
   const data = resolve(obj, pointer, () => {});
   return typeof data !== "undefined";
 }
-export function compile(paths: (string | number)[]): string {
-  const pathString = paths
-    .map((path) => {
-      if (typeof path === "number") {
-        return path;
-      }
-      return escape(path);
-    })
-    .join("/");
-  return "/" + pathString;
+export function compile(paths: (string | number)[], encoding?: "uri"): string {
+  const pathString = paths.map((path) => {
+    if (typeof path === "number") {
+      return path;
+    }
+    return escape(path);
+  });
+  if (encoding === "uri") {
+    return `#/${pathString.map(encodeURIComponent).join("/")}`;
+  }
+  return "/" + pathString.join("/");
 }
 export function resolve<T extends {}, V extends unknown, P extends string>(
   doc: T,
