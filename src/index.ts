@@ -137,7 +137,7 @@ export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
         prev[key] = nextValue;
         return;
       }
-      const current = prev[path];
+      const current = prev[path] ?? {};
       prev[path] = clone(current);
       prev = prev[path];
     } while (++i <= pathSize);
