@@ -82,4 +82,19 @@ describe("Setter", () => {
         changed.parent.children[1].child?.name
     ).toBeFalsy();
   });
+  it("Changing deep paths data", () => {
+    const source = {};
+    const changed = set(source, "/root/children/0/child/name", "next");
+    expect(changed).toEqual({
+      root: {
+        children: {
+          0: {
+            child: {
+              name: "next",
+            },
+          },
+        },
+      },
+    });
+  });
 });
