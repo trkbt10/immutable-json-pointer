@@ -31,6 +31,9 @@ export function has<T extends {}>(obj: T, pointer: string): boolean {
   return typeof data !== "undefined";
 }
 export function compile(paths: (string | number)[], encoding?: "uri"): string {
+  if (paths.length === 0) {
+    return "";
+  }
   const pathString = paths.map((path) => {
     if (typeof path === "number") {
       return path;
@@ -48,7 +51,10 @@ export function resolve<T extends {}, V extends unknown, P extends string>(
   callback?: JSONPointerReplacer
 ): V {
   const [mode, ...rest] = parse(pointer);
-  if (mode === "" && rest.length === 0) {
+  if ((mode === undefined || mode === "") && rest.length === 0) {
+    if (callback) {
+      callback(doc, "", undefined, []);
+    }
     return doc as any;
   }
 
@@ -86,15 +92,20 @@ export function get<T extends {}, R extends unknown>(
 }
 
 export function remove<T extends {}>(json: T, pointer: string) {
-  const next = { ...json };
-  resolve(json, pointer, (value, key, parent) => {
-    if (Array.isArray(parent)) {
-      parent.splice(Number(key), 1);
+  let res = clone(json);
+  resolve(res, pointer, (value, key, parent, paths) => {
+    const cloned = clone(parent);
+    const p = compile(paths);
+    if (Array.isArray(cloned)) {
+      const index = +key;
+      cloned.splice(index, 1);
+      res = set(res, p, cloned);
     } else {
-      delete parent[key];
+      delete cloned[key];
+      res = set(res, p, cloned);
     }
   });
-  return next;
+  return res;
 }
 export function dict<T extends {}>(json: T): Record<string, unknown> {
   const result: Record<string, unknown> = {};
@@ -113,7 +124,7 @@ export function dict<T extends {}>(json: T): Record<string, unknown> {
   return result;
 }
 export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
-  const next: T = clone(doc);
+  let next: T = clone(doc);
   const replacer: JSONPointerReplacer = (value, key, parent, paths) => {
     if (value === nextValue) {
       return;
@@ -131,6 +142,11 @@ export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
         } else {
           prev[+key] = nextValue;
         }
+        return;
+      }
+      // Create new object
+      if (isLast && key === "") {
+        next = nextValue;
         return;
       }
       if (isLast) {
