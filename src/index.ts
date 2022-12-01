@@ -10,9 +10,28 @@ function sliceLast<T extends unknown[]>(arr: T) {
   const key = arr.at(-1) as R[1];
   return [paths, key] as const;
 }
-function isObject(obj: unknown): obj is Record<string, unknown> {
+function isPollutedKey(part: unknown) {
+  return part === "__proto__" || part === "constructor" || part === "prototype";
+}
+function hasKey(obj: Record<string, unknown>, key: string) {
+  if (!isPlainObject(obj)) {
+    return false;
+  }
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+function isPlainObject(obj: unknown): obj is Record<string, unknown> {
   return typeof obj === "object" && obj !== null;
 }
+function clone<T extends any>(item: T) {
+  if (Array.isArray(item)) {
+    return [...item] as T;
+  }
+  if (isPlainObject(item)) {
+    return { ...item } as T;
+  }
+  return item;
+}
+
 export function escape(str: string) {
   return str.replace(/~/g, "~0").replace(/\//g, "~1");
 }
@@ -61,14 +80,10 @@ export function resolve<T extends {}, V extends unknown, P extends string>(
   let result: any = doc;
   let parent: any;
   for (const part of rest) {
-    if (
-      part === "__proto__" ||
-      part === "constructor" ||
-      part === "prototype"
-    ) {
+    if (isPollutedKey(part)) {
       throw new Error("Prototype pollution attempt");
     }
-    if (!(part in result)) {
+    if (!hasKey(result, part)) {
       if (callback) {
         result = undefined;
         break;
@@ -112,7 +127,7 @@ export function dict<T extends {}>(json: T): Record<string, unknown> {
   const walker = (obj: any, paths: string[]) => {
     for (const key in obj) {
       const value = obj[key];
-      if (isObject(value)) {
+      if (isPlainObject(value)) {
         const nextPaths = [...paths, key];
         walker(value, nextPaths);
         continue;
@@ -176,14 +191,4 @@ export function transform<
   const result: Parameters<Fn>[0] = read(doc, pointer);
   const next = fn(result) as ReturnType<Fn>;
   return set<T>(doc, pointer, next);
-}
-
-function clone<T extends any>(item: T) {
-  if (Array.isArray(item)) {
-    return [...item] as T;
-  }
-  if (isObject(item)) {
-    return { ...item } as T;
-  }
-  return item;
 }
