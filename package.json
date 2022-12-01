@@ -1,7 +1,7 @@
 {
   "name": "immutable-json-pointer",
   "version": "1.0.4",
-  "description": "",
+  "description": "JSON Pointer implementation for Node.js",
   "type": "module",
   "main": "lib/index.cjs",
   "types": "types/src/index.d.ts",
@@ -10,11 +10,14 @@
     "require": "./lib/index.cjs"
   },
   "scripts": {
-    "build": "vite build && tsc",
+    "build": "vite build && tsc -d",
     "test": "vitest"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "jsonpointer",
+    "json"
+  ],
+  "author": "trkbt10 <triplequartet@gmail.com>",
   "license": "Apache-2.0",
   "devDependencies": {
     "ts-node": "^10.9.1",
