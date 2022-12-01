@@ -8,10 +8,10 @@ Mutate a copy of data without changing the original source.
 
 ```bash
 // NPM
-$ npm install git@github.com:trkbt10/immutable-json-pointer.git
+$ npm install immutable-json-pointer
 
 // yarn v2
-$ yarn add 'immutable-json-pointer@https://github.com/trkbt10/immutable-json-pointer.git#head=main'
+$ yarn add immutable-json-pointer
 ```
 
 ## Usage
