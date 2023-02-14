@@ -32,7 +32,10 @@ function clone<T extends any>(item: T) {
   return item;
 }
 
-export function escape(str: string) {
+export function escape(str: string | number): string {
+  if (typeof str === "number") {
+    return escape(str.toString());
+  }
   return str.replace(/~/g, "~0").replace(/\//g, "~1");
 }
 export function unescape(str: string): string {
@@ -43,7 +46,8 @@ export function parse(pointer: string): string[] {
     const unescapedPointer = decodeURIComponent(pointer).replace(/^#/, "");
     return parse(unescapedPointer);
   }
-  return pointer.split("/").map(unescape);
+  const sliced = pointer.split("/");
+  return sliced.map(unescape);
 }
 export function has<T extends {}>(obj: T, pointer: string): boolean {
   const data = resolve(obj, pointer, () => {});
@@ -53,16 +57,12 @@ export function compile(paths: (string | number)[], encoding?: "uri"): string {
   if (paths.length === 0) {
     return "";
   }
-  const pathString = paths.map((path) => {
-    if (typeof path === "number") {
-      return path;
-    }
-    return escape(path);
-  });
+  const pathString = paths.map(escape).join("/");
+  const prefix = pathString.startsWith("/") ? "" : "/";
   if (encoding === "uri") {
-    return `#/${pathString.map(encodeURIComponent).join("/")}`;
+    return `#${prefix}${encodeURIComponent(pathString)}`;
   }
-  return "/" + pathString.join("/");
+  return prefix + pathString;
 }
 export function resolve<T extends {}, V extends unknown, P extends string>(
   doc: T,

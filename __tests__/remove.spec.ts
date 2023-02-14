@@ -21,5 +21,9 @@ describe("Remove", () => {
     expect(remove(json, "/hoge")).toEqual({
       foo: [0, 1, 2, 3, 4, 5],
     });
+    expect(json).toStrictEqual({
+      foo: [0, 1, 2, 3, 4, 5],
+      hoge: "fuga",
+    });
   });
 });
