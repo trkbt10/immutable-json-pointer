@@ -1,5 +1,5 @@
 declare type JSONPointerReplacer = (value: any, key: string, parent: any, paths: string[]) => void;
-export declare function escape(str: string): string;
+export declare function escape(str: string | number): string;
 export declare function unescape(str: string): string;
 export declare function parse(pointer: string): string[];
 export declare function has<T extends {}>(obj: T, pointer: string): boolean;
