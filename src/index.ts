@@ -138,6 +138,21 @@ export function dict<T extends {}>(json: T): Record<string, unknown> {
   walker(json, []);
   return result;
 }
+export function compose<
+  T extends {},
+  Initial extends T = T,
+  Result extends any = T
+>(
+  entriesOrRecord: [string, any][] | Record<string, unknown>,
+  initial?: Initial
+) {
+  const entries = Array.isArray(entriesOrRecord)
+    ? entriesOrRecord
+    : Object.entries(entriesOrRecord);
+  return entries.reduce((acc, [pointer, value]) => {
+    return set(acc, pointer, value);
+  }, initial ?? {}) as Result;
+}
 export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
   let next: T = clone(doc);
   const replacer: JSONPointerReplacer = (value, key, parent, paths) => {
