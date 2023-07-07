@@ -2,12 +2,14 @@
   "name": "immutable-json-pointer",
   "version": "1.0.6",
   "description": "JSON Pointer implementation for Node.js",
-  "type": "module",
-  "main": "lib/index.cjs",
+  "main": "lib/index.js",
+  "module": "lib/index.cjs",
   "types": "types/src/index.d.ts",
   "exports": {
-    "import": "./lib/index.js",
-    "require": "./lib/index.cjs"
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs"
+    }
   },
   "scripts": {
     "build": "vite build && tsc -d",
