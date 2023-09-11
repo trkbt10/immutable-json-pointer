@@ -4,16 +4,16 @@
   "description": "JSON Pointer implementation for Node.js",
   "main": "lib/index.cjs",
   "module": "lib/index.js",
-  "types": "types/src/index.d.ts",
+  "types": "types/index.d.ts",
   "exports": {
     ".": {
       "import": "./lib/index.js",
-      "types": "./types/src/index.d.ts",
+      "types": "./types/index.d.ts",
       "require": "./lib/index.cjs"
     }
   },
   "scripts": {
-    "build": "vite build && tsc -d",
+    "build": "vite build",
     "test": "vitest"
   },
   "keywords": [
@@ -34,6 +34,7 @@
     "tsc": "^2.0.4",
     "typescript": "^4.8.2",
     "vite": "^3.1.0",
+    "vite-plugin-dts": "^3.5.3",
     "vitest": "^0.23.1"
   }
 }
