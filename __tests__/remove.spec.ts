@@ -26,4 +26,51 @@ describe("Remove", () => {
       hoge: "fuga",
     });
   });
+  it("actual", () => {
+    const deepObject = {
+      properties: {
+        columns: {
+          items: {
+            properties: {
+              buttons: {
+                items: {
+                  properties: {
+                    exists: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+    expect(
+      remove(
+        deepObject,
+        "/properties/columns/items/properties/buttons/items/properties/__missing__"
+      )
+    ).toStrictEqual(deepObject);
+    expect(
+      remove(
+        deepObject,
+        "/properties/columns/items/properties/buttons/items/properties/exists"
+      )
+    ).toStrictEqual({
+      properties: {
+        columns: {
+          items: {
+            properties: {
+              buttons: {
+                items: {
+                  properties: {},
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  });
 });

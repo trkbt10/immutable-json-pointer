@@ -109,6 +109,10 @@ export function get<T extends {}, R extends unknown>(
 export function remove<T extends {}>(json: T, pointer: string) {
   let res = clone(json);
   resolve(res, pointer, (value, key, parent, paths) => {
+    // If value is undefined, do nothing
+    if (typeof value === "undefined") {
+      return;
+    }
     const cloned = clone(parent);
     const p = compile(paths);
     if (Array.isArray(cloned)) {
