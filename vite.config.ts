@@ -1,8 +1,16 @@
 /// <reference types="vitest" />
 import path from "node:path";
 import { defineConfig } from "vitest/config";
+import dts from "vite-plugin-dts";
+const entryRoot = path.resolve(__dirname, "src");
 export default defineConfig({
-  plugins: [],
+  plugins: [
+    dts({
+      entryRoot,
+      include: ["src/**/*"],
+      outDir: "types",
+    }),
+  ],
   resolve: {},
   test: {
     globals: true,
@@ -10,7 +18,7 @@ export default defineConfig({
   build: {
     outDir: "lib",
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
+      entry: path.resolve(entryRoot, "index.ts"),
       name: "immutable-json-pointer",
       formats: ["es", "cjs"],
       fileName: (format) => {
