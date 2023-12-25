@@ -28,7 +28,7 @@
     "url": "https://github.com/trkbt10/immutable-json-pointer/issues"
   },
   "author": "trkbt10 <triplequartet@gmail.com>",
-  "license": "Apache-2.0",
+  "license": "Unlicense",
   "devDependencies": {
     "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
