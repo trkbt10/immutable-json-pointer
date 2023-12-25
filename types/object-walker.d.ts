@@ -2,7 +2,7 @@ export declare class Circular<T> {
     value: T;
     constructor(value: T);
 }
-declare type WalkerContainer = {
+type WalkerContainer = {
     callback: (paths: string, object: any) => any;
     options: {
         escape?: boolean;

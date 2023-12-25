@@ -1,4 +1,4 @@
-declare type JSONPointerReplacer = (value: any, key: string, parent: any, paths: string[]) => void;
+type JSONPointerReplacer = (value: any, key: string, parent: any, paths: string[]) => void;
 export declare function escape(str: string | number): string;
 export declare function unescape(str: string): string;
 export declare function parse(pointer: string): string[];
@@ -12,4 +12,5 @@ export declare function compose<T extends {}, Initial extends T = T, Result exte
 export declare function set<T extends {}>(doc: T, pointer: string, nextValue: any): T;
 export declare function read<T extends {}>(json: T, pointer: string): unknown;
 export declare function transform<T extends {}, Fn extends (params: unknown) => unknown>(doc: T, pointer: string, fn: Fn): T;
+export declare function chain<T>(...operations: ((val: T) => T)[]): (source: T) => T;
 export {};
