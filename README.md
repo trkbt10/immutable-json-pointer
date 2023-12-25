@@ -138,3 +138,23 @@ const json2 = transform(json, "/value", (prev, path) => {
 console.log(json); // { "value": 0 }
 console.log(json2); // { "value": 1 }
 ```
+
+### chain
+
+```typescript
+import { chain } from "immutable-json-pointer";
+const doc = {
+  foo: {
+    bar: {
+      baz: 1,
+    },
+  },
+};
+const operation = chain<typeof doc>(
+  (doc) => set(doc, "/foo/bar/baz", 2),
+  (doc) => set(doc, "/foo/bar/baz", 3),
+  (doc) => set(doc, "/foo/bar/baz", 4)
+);
+const result = operation(doc);
+console.log(result); // { foo:{ bar: { baz: 4 } } }
+```

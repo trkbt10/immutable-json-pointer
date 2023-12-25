@@ -211,3 +211,9 @@ export function transform<
   const next = fn(result) as ReturnType<Fn>;
   return set<T>(doc, pointer, next);
 }
+
+export function chain<T>(...operations: ((val: T) => T)[]) {
+  return (source: T) => {
+    return operations.reduce((acc, fn) => fn(acc), source);
+  };
+}
