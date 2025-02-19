@@ -65,6 +65,11 @@ expect(newJson === json).toBeFalsy();
 expect(newJson.hoge === json.hoge).toBeTruthy();
 expect(newJson.foo === json.foo).toBeFalsy();
 expect(newJson.foo[2]).toBe("boss");
+
+const json2 = {};
+
+const newJson2 = set(json2, "/quuux/0", "ax"); // { "quuux" : ["ax"] }
+exepct(Array.isArray(newJson2.quuux)).toBe(true);
 ```
 
 ### has

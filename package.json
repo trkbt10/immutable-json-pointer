@@ -1,6 +1,6 @@
 {
   "name": "immutable-json-pointer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "JSON Pointer implementation for Node.js",
   "main": "lib/index.cjs",
   "module": "lib/index.js",
