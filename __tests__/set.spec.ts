@@ -10,6 +10,8 @@ describe("Setter", () => {
     expect(source === changed).toBeFalsy();
     expect(changed.string === source.string).toBeFalsy();
     expect(changed.ref === source.ref).toBeTruthy();
+  });
+  it("Object", () => {
     const json = {
       foo: ["bar", "baz"],
       hoge: {
@@ -17,7 +19,6 @@ describe("Setter", () => {
       },
     };
     const newJson = set(json, "/foo/-", "boss");
-
     expect(newJson === json).toBeFalsy();
     expect(newJson.hoge === json.hoge).toBeTruthy();
     expect(newJson.foo === json.foo).toBeFalsy();
@@ -87,14 +88,25 @@ describe("Setter", () => {
     const changed = set(source, "/root/children/0/child/name", "next");
     expect(changed).toEqual({
       root: {
-        children: {
-          0: {
+        children: [
+          {
             child: {
               name: "next",
             },
           },
-        },
+        ],
       },
+    });
+  });
+  it("Changing deep paths for array", () => {
+    const source = {};
+    const changed = set(source, "/statements/0/actions/1", "next");
+    expect(changed).toEqual({
+      statements: [
+        {
+          actions: [, "next"],
+        },
+      ],
     });
   });
 });

@@ -168,29 +168,40 @@ export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
     let i = 0;
     let prev: any = next;
     do {
+      if (i === pathSize) {
+        break;
+      }
+
       const path = paths[i];
-      const isLast = i >= pathSize;
-      if (isLast && Array.isArray(prev)) {
-        if (key === "-") {
-          prev.push(nextValue);
-        } else {
-          prev[+key] = nextValue;
-        }
-        return;
-      }
+      const nextPath = pathSize === i + 1 ? key : paths[i + 1];
+      const nextPathNumeric = Number.isInteger(+nextPath);
       // Create new object
-      if (isLast && key === "") {
-        next = nextValue;
-        return;
-      }
-      if (isLast) {
-        prev[key] = nextValue;
-        return;
-      }
-      const current = prev[path] ?? {};
+      const current = prev[path] ?? (nextPathNumeric ? [] : {});
       prev[path] = clone(current);
       prev = prev[path];
-    } while (++i <= pathSize);
+    } while (++i < pathSize);
+
+    // Insert into array
+    if (Array.isArray(prev)) {
+      if (key === "-") {
+        prev.push(nextValue);
+      } else {
+        prev[+key] = nextValue;
+      }
+      return;
+    }
+    // Create new object
+    if (key === "") {
+      next = nextValue;
+      return;
+    }
+    if (Number.isInteger(+key)) {
+      prev[+key] = nextValue;
+      return;
+    }
+
+    // Set value
+    prev[key] = nextValue;
   };
 
   resolve(doc, pointer, replacer);
