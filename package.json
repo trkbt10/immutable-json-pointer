@@ -14,7 +14,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "test": "vitest"
+    "test": "vitest",
+    "benchmark": "ts-node benchmark/index.ts"
   },
   "keywords": [
     "jsonpointer",
@@ -30,6 +31,7 @@
   "author": "trkbt10 <triplequartet@gmail.com>",
   "license": "Unlicense",
   "devDependencies": {
+    "@types/node": "^24.0.0",
     "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
     "typescript": "^5.7.3",
