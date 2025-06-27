@@ -4,25 +4,25 @@ type JSONPointerReplacer = (
   parent: any,
   paths: string[]
 ) => void;
-function sliceLast<T extends unknown[]>(arr: T) {
+const sliceLast = <T extends unknown[]>(arr: T) => {
   type R = T extends [...infer U, infer L] ? [U, L] : [T[number][], T[number]];
   const paths = arr.slice(0, -1) as R[0];
   const key = arr.at(-1) as R[1];
   return [paths, key] as const;
-}
-function isPollutedKey(part: unknown) {
+};
+const isPollutedKey = (part: unknown) => {
   return part === "__proto__" || part === "constructor" || part === "prototype";
-}
-function hasKey(obj: Record<string, unknown>, key: string) {
+};
+const hasKey = (obj: Record<string, unknown>, key: string) => {
   if (!isPlainObject(obj)) {
     return false;
   }
   return Object.prototype.hasOwnProperty.call(obj, key);
-}
-function isPlainObject(obj: unknown): obj is Record<string, unknown> {
+};
+const isPlainObject = (obj: unknown): obj is Record<string, unknown> => {
   return typeof obj === "object" && obj !== null;
-}
-function clone<T extends any>(item: T) {
+};
+const clone = <T extends any>(item: T) => {
   if (Array.isArray(item)) {
     return [...item] as T;
   }
@@ -30,30 +30,30 @@ function clone<T extends any>(item: T) {
     return { ...item } as T;
   }
   return item;
-}
+};
 
-export function escape(str: string | number): string {
+export const escape = (str: string | number): string => {
   if (typeof str === "number") {
     return escape(str.toString());
   }
   return str.replace(/~/g, "~0").replace(/\//g, "~1");
-}
-export function unescape(str: string): string {
+};
+export const unescape = (str: string): string => {
   return str.replace(/\~1/g, "/").replace(/\~0/g, "~");
-}
-export function parse(pointer: string): string[] {
+};
+export const parse = (pointer: string): string[] => {
   if (pointer.startsWith("#")) {
     const unescapedPointer = decodeURIComponent(pointer).replace(/^#/, "");
     return parse(unescapedPointer);
   }
   const sliced = pointer.split("/");
   return sliced.map(unescape);
-}
-export function has<T extends {}>(obj: T, pointer: string): boolean {
+};
+export const has = <T extends {}>(obj: T, pointer: string): boolean => {
   const data = resolve(obj, pointer, () => {});
   return typeof data !== "undefined";
-}
-export function compile(paths: (string | number)[], encoding?: "uri"): string {
+};
+export const compile = (paths: (string | number)[], encoding?: "uri"): string => {
   if (paths.length === 0) {
     return "";
   }
@@ -63,12 +63,12 @@ export function compile(paths: (string | number)[], encoding?: "uri"): string {
     return `#${prefix}${encodeURIComponent(pathString)}`;
   }
   return prefix + pathString;
-}
-export function resolve<T extends {}, V extends unknown, P extends string>(
+};
+export const resolve = <T extends {}, V extends unknown, P extends string>(
   doc: T,
   pointer: P,
   callback?: JSONPointerReplacer
-): V {
+): V => {
   const [mode, ...rest] = parse(pointer);
   if ((mode === undefined || mode === "") && rest.length === 0) {
     if (callback) {
@@ -98,15 +98,15 @@ export function resolve<T extends {}, V extends unknown, P extends string>(
     callback(result, key, parent, paths);
   }
   return result;
-}
-export function get<T extends {}, R extends unknown>(
+};
+export const get = <T extends {}, R extends unknown>(
   json: T,
   pointer: string
-): R {
+): R => {
   return resolve(json, pointer);
-}
+};
 
-export function remove<T extends {}>(json: T, pointer: string) {
+export const remove = <T extends {}>(json: T, pointer: string) => {
   let res = clone(json);
   resolve(res, pointer, (value, key, parent, paths) => {
     // If value is undefined, do nothing
@@ -125,8 +125,8 @@ export function remove<T extends {}>(json: T, pointer: string) {
     }
   });
   return res;
-}
-export function dict<T extends {}>(json: T): Record<string, unknown> {
+};
+export const dict = <T extends {}>(json: T): Record<string, unknown> => {
   const result: Record<string, unknown> = {};
   const walker = (obj: any, paths: string[]) => {
     for (const key in obj) {
@@ -141,23 +141,23 @@ export function dict<T extends {}>(json: T): Record<string, unknown> {
   };
   walker(json, []);
   return result;
-}
-export function compose<
+};
+export const compose = <
   T extends {},
   Initial extends T = T,
   Result extends any = T
 >(
   entriesOrRecord: [string, any][] | Record<string, unknown>,
   initial?: Initial
-) {
+) => {
   const entries = Array.isArray(entriesOrRecord)
     ? entriesOrRecord
     : Object.entries(entriesOrRecord);
   return entries.reduce((acc, [pointer, value]) => {
     return set(acc, pointer, value);
   }, initial ?? {}) as Result;
-}
-export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
+};
+export const set = <T extends {}>(doc: T, pointer: string, nextValue: any): T => {
   let next: T = clone(doc);
   const replacer: JSONPointerReplacer = (value, key, parent, paths) => {
     if (value === nextValue) {
@@ -206,25 +206,25 @@ export function set<T extends {}>(doc: T, pointer: string, nextValue: any): T {
 
   resolve(doc, pointer, replacer);
   return next;
-}
-export function read<T extends {}>(json: T, pointer: string) {
+};
+export const read = <T extends {}>(json: T, pointer: string) => {
   if (has(json, pointer)) {
     return get(json, pointer);
   }
   return;
-}
+};
 
-export function transform<
+export const transform = <
   T extends {},
   Fn extends (params: unknown) => unknown
->(doc: T, pointer: string, fn: Fn): T {
+>(doc: T, pointer: string, fn: Fn): T => {
   const result: Parameters<Fn>[0] = read(doc, pointer);
   const next = fn(result) as ReturnType<Fn>;
   return set<T>(doc, pointer, next);
-}
+};
 
-export function chain<T>(...operations: ((val: T) => T)[]) {
+export const chain = <T>(...operations: ((val: T) => T)[]) => {
   return (source: T) => {
     return operations.reduce((acc, fn) => fn(acc), source);
   };
-}
+};

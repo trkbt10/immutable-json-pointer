@@ -1,4 +1,4 @@
-import { compile } from "./index";
+import { compile } from ".";
 export class Circular<T> {
   constructor(public value: T) {}
 }
@@ -10,11 +10,11 @@ type WalkerContainer = {
   memo: WeakMap<object, any>;
   results: any[];
 };
-export function objectWalker<T extends any>(
+export const objectWalker = <T extends any>(
   source: T,
   callback: WalkerContainer["callback"],
   options: WalkerContainer["options"]
-) {
+) => {
   const container: WalkerContainer = {
     callback,
     options,
@@ -23,13 +23,13 @@ export function objectWalker<T extends any>(
   };
   walker(container, source, []);
   return container.results;
-}
+};
 
-function walker(
+const walker = (
   container: WalkerContainer,
   obj: any,
   paths: (string | number)[]
-) {
+) => {
   const isCircular = container.memo.has(obj);
   const compiledPath = compile(
     paths,
@@ -57,4 +57,4 @@ function walker(
       walker(container, value, nextPaths);
     }
   }
-}
+};
