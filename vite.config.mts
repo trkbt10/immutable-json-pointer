@@ -11,7 +11,7 @@ export default defineConfig({
     dts({
       entryRoot,
       include: ["src/**/*"],
-      outDir: "types",
+      outDir: "dist",
     }),
   ],
   resolve: {},
@@ -19,19 +19,21 @@ export default defineConfig({
     globals: true,
   },
   build: {
-    outDir: "lib",
+    outDir: "dist",
     lib: {
-      entry: resolve(entryRoot, "index.ts"),
-      name: "immutable-json-pointer",
+      entry: {
+        index: resolve(entryRoot, "index.ts"),
+        "typed-json-pointer": resolve(entryRoot, "typed-json-pointer.ts"),
+      },
       formats: ["es", "cjs"],
-      fileName: (format) => {
+      fileName: (format, entryName) => {
         if (format === "es") {
-          return "index.js";
+          return `${entryName}.js`;
         }
         if (format === "cjs") {
-          return "index.cjs";
+          return `${entryName}.cjs`;
         }
-        return "index.js";
+        return `${entryName}.js`;
       },
     },
     rollupOptions: {},
