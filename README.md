@@ -7,14 +7,29 @@ Mutate a copy of data without changing the original source.
 ## Install
 
 ```bash
-// NPM
-$ npm install immutable-json-pointer
+npm install immutable-json-pointer
 
-// yarn v2
-$ yarn add immutable-json-pointer
 ```
 
 ## Usage
+
+This package provides two import paths:
+
+- **Main export**: `immutable-json-pointer` - Standard JSON Pointer functions
+- **Typed export**: `immutable-json-pointer/typed` - Type-safe JSON Pointer functions with TypeScript support
+
+### Standard Import
+
+```typescript
+import { get, set, has, read, remove } from "immutable-json-pointer";
+```
+
+### Typed Import (Type-safe)
+
+```typescript
+import { get, set, has, read, remove } from "immutable-json-pointer/typed";
+// These functions provide better TypeScript inference and type safety
+```
 
 ### get
 
@@ -69,7 +84,7 @@ expect(newJson.foo[2]).toBe("boss");
 const json2 = {};
 
 const newJson2 = set(json2, "/quuux/0", "ax"); // { "quuux" : ["ax"] }
-exepct(Array.isArray(newJson2.quuux)).toBe(true);
+expect(Array.isArray(newJson2.quuux)).toBe(true);
 ```
 
 ### has
@@ -103,7 +118,7 @@ const json = {
   value: 1,
 };
 const newJson = remove(json, "/unused");
-console.log(newJSON); // { value: 1 }
+console.log(newJson); // { value: 1 }
 console.log(json); // { unused: 0, value: 1 }
 ```
 
@@ -144,6 +159,26 @@ console.log(json); // { "value": 0 }
 console.log(json2); // { "value": 1 }
 ```
 
+### compose
+
+```typescript
+import { compose } from "immutable-json-pointer";
+const entries = [
+  ["/foo/bar", "value1"],
+  ["/foo/baz", "value2"],
+];
+const result = compose(entries);
+console.log(result); // { foo: { bar: "value1", baz: "value2" } }
+
+// Or with an object
+const dict = {
+  "/foo/bar": "value1",
+  "/foo/baz": "value2",
+};
+const result2 = compose(dict);
+console.log(result2); // { foo: { bar: "value1", baz: "value2" } }
+```
+
 ### chain
 
 ```typescript
@@ -162,4 +197,22 @@ const operation = chain<typeof doc>(
 );
 const result = operation(doc);
 console.log(result); // { foo:{ bar: { baz: 4 } } }
+```
+
+### parse
+
+```typescript
+import { parse } from "immutable-json-pointer";
+console.log(parse("/foo/bar")); // ["", "foo", "bar"]
+console.log(parse("#/foo/bar")); // ["", "foo", "bar"] (URI fragment)
+```
+
+### escape / unescape
+
+```typescript
+import { escape, unescape } from "immutable-json-pointer";
+console.log(escape("foo/bar")); // "foo~1bar"
+console.log(escape("foo~bar")); // "foo~0bar"
+console.log(unescape("foo~1bar")); // "foo/bar"
+console.log(unescape("foo~0bar")); // "foo~bar"
 ```
